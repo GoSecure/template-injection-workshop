@@ -1,0 +1,18 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2020-09-28T10:28:27-04:00",
+  "id": "template-injection-workshop",
+  "duration": 91,
+  "title": "Template Injection in Action",
+  "authors": "Philippe Arteau",
+  "summary": "Template engines are libraries mainly used to design views for web applications. Their use helps simplify common design tasks for developers. However, their use may introduce new risks if they are used in an improper way. Template injection is a vulnerability class that has emerged in 2016. The exploitation of this type of issue will require specific knowledge associated with the template library or the language being used underneath. Knowing vulnerability basics is often insufficient to be effective. For these reasons, we are proposing a practical workshop that focuses on template injection vulnerabilities. The training will cover various template engine in different programming languages (PHP, Python and Java).",
+  "source": "index.md",
+  "theme": "",
+  "status": null,
+  "category": null,
+  "tags": [],
+  "url": "template-injection-workshop"
+}
