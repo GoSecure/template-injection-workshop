@@ -1,0 +1,9 @@
+version: '2'
+services:
+  pyserver_tornado:
+    build: .
+    ports:
+     - "8014:80"
+    volumes:
+      - ./secret:/secret
+      - ./src:/app

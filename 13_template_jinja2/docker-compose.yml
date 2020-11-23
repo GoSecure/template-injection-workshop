@@ -1,0 +1,9 @@
+version: '2'
+services:
+  pyserver_jinja:
+    build: .
+    ports:
+     - "8013:80"
+    volumes:
+      - ./secret:/secret
+      - ./src:/app

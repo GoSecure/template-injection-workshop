@@ -1,0 +1,29 @@
+.navbar-default {
+    background-color: #fff;
+}
+
+.navbar  {
+padding:1px;
+}
+
+.navbar-brand {
+  height: 100px;
+}
+
+.navbar-default .navbar-nav > li > a {
+  color: #955fab;
+}
+
+header .container {
+    padding-bottom: 50px;
+                             padding-top: 130px;
+}
+
+hr.star-light:after {
+    background-color: #955fab;
+}
+
+td, th {
+    padding: 10px;
+    font-size: 20px;
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html layout:decorator="fragments/layout" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Admin</title>
+</head>
+<body>
+
+<div class="container" layout:fragment="content">
+
+<p>
+    In this admin section, email campaign can be edited.
+</p>
+
+<table>
+    <tr>
+        <th>Template</th>
+        <th>Actions</th>
+    </tr>
+    <tr th:each="entry : ${emailTemplates}">
+        <td><span th:text="${entry.value.subject}"></span></td>
+        <td><a th:href="'/admin/edit_template/'+${entry.key}">Edit</a> | <a href="#">Delete</a></td>
+    </tr>
+</table>
+
+</div>
+
+
+</body>
+</html>

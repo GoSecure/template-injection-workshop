@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html layout:decorator="fragments/layout" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Pages</title>
+</head>
+<body>
+
+<div class="container" layout:fragment="content">
+
+
+<table>
+    <tr>
+        <th>Pages</th>
+        <th>Actions</th>
+    </tr>
+    <tr th:each="entry : ${pageTemplates}">
+        <td><span th:text="${entry.value.title}"></span></td>
+        <td><a th:href="'/admin/edit_page/'+${entry.key}">Edit</a> | <a href="#">Delete</a></td>
+    </tr>
+</table>
+
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+version: '2'
+services:
+  web:
+    image: php:7.1.4-apache
+    ports:
+     - "8012:80"
+    volumes:
+      - ./secret:/secret
+      - ./src:/var/www/html

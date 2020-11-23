@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title layout:title-pattern="$CONTENT_TITLE :: $DECORATOR_TITLE">EasyCMS</title>
+
+    <link href="/css/bootstrap.css" rel="stylesheet"/>
+    <link href="/css/freelancer.css" rel="stylesheet"/>
+    <link href="/css/override.css" rel="stylesheet"/>
+    <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <link href="//fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
+    <link href="//fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+
+<div  id="page-top"></div>
+
+
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/"><img src="/images/logo.png" width="500px"/></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="hidden">
+                    <a href="#page-top"></a>
+                </li>
+                <li class="page-scroll">
+                    <a href="/">Home</a>
+                </li>
+                <li class="page-scroll">
+                    <a href="/admin">Admin</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container-fluid -->
+</nav>
+
+<!-- Header -->
+<header>
+    <div class="container">
+        <div sec:authorize="hasRole('ROLE_ADMIN')">
+            <h4>Welcome <span sec:authentication="name"></span>!</h4>
+        </div>
+        <div sec:authorize="not(hasRole('ROLE_ADMIN'))">
+            <h4>Welcome to the World Wild Web!</h4>
+        </div>
+    </div>
+</header>
+
+<!-- Main content -->
+<section id="main_content">
+    <div class="container">
+        <div layout:fragment="content">
+
+            This will be replace
+
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="text-center">
+    <div class="footer-below">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    Copyright &copy; EasyCMS 2020
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
+<div class="scroll-top page-scroll visible-xs visible-sm">
+    <a class="btn btn-primary" href="#page-top">
+        <i class="fa fa-chevron-up"></i>
+    </a>
+</div>
+
+
+<!-- jQuery -->
+<script src="/js/jquery/jquery-1.8.3.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+</body>
+</html>

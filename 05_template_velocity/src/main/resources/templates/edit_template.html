@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html layout:decorator="fragments/layout" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Editing template</title>
+</head>
+<body>
+
+<div class="container" layout:fragment="content">
+
+<div  th:if="${preview != null}">
+    <h1>Preview:</h1>
+    <div>
+        <div style="width:48%;float:left;">
+            <pre style="background:#CCCCCC;padding:5px" th:text="${preview}"></pre>
+        </div>
+
+        <div style="width:48%;float:right;" th:utext="${preview}">
+        </div>
+
+        <div style="clear:both"></div>
+    </div>
+    <br/><br/>
+</div>
+
+<h1>Editing template: </h1>
+
+
+<form action="" method="post"  th:object="${templateForm}">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+    <p>
+        Subject : <br/>
+        <input th:field="*{subject}" type="text"/><br/>
+        Message : <br/>
+        <textarea  th:field="*{templateCode}" class="templateCodeArea" rows="15" style="width:100%"></textarea>
+    </p>
+    <br/><br/>
+    <button name="action" value="save">Save</button>
+    <button name="action" value="test">Test</button>
+
+</form>
+<br/>
+
+<a href="/admin">Back to templates list</a>
+<br/>
+<br/>
+
+
+
+</div>
+
+
+</body>
+</html>
+
+<script src="/js/jquery/jquery-1.8.3.min.js"></script>
+<script src="/js/ace/ace.js"></script>
+<script src="/js/ace/theme-textmate.js"></script>
+<script src="/js/ace/mode-html.js"></script>
+<script src="/js/jquery-ace.min.js"></script>
+<script>
+  $('.templateCodeArea').ace({ theme: 'textmate', lang: 'html' })
+</script>
