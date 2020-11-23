@@ -56,14 +56,18 @@
 <h2 is-upgraded>Running the applications</h2>
 <p>In order to do the exercise, you will need to run the <a href="https://github.com/GoSecure/template-injection-workshop" target="_blank">lab applications</a> by yourself. All applications were built with a docker container recipe. This should make the deployment easier.</p>
 <ol type="1">
-<li>Download the code.<pre><code>git clone https://github.com/GoSecure/template-injection-workshop
+<li>Download the code.<pre><code>$ git clone https://github.com/GoSecure/template-injection-workshop
 </code></pre>
 </li>
 <li>Read build instructions (<code>%application_dir%/README.md</code>) This step will differ for each application.</li>
-<li>Use docker-compose to start the application.<pre><code>docker-compose up
+<li>Use docker-compose to start the application.<pre><code>$ docker-compose up
 </code></pre>
 </li>
 </ol>
+<h2 is-upgraded>Optional DNS configuration</h2>
+<p>In order to make the links work, you can optionally add an entry to your local host file. (<code>/etc/hosts</code> or <code>C:\Windows\system32\drivers\etc\hosts</code>)</p>
+<pre><code>127.0.0.1   template-injection.gosec.co
+</code></pre>
 
 
       </google-codelab-step>
