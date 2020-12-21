@@ -60,6 +60,15 @@ In order to make the links work, you can optionally add an entry to your local h
 ```
 
 
+### Video presentation
+
+You can watch the complete workshop on video. From the video, you will be able to listen to all the tutorials and see the demonstrations for all exercises.
+Open the [YouTube page in a new window](https://youtu.be/I7xQZOvZzIw) to see the chapters.
+
+<video id="I7xQZOvZzIw"></video>
+
+
+
 ## Template Injection 
 
 
