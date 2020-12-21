@@ -18,12 +18,13 @@
       color: red;
     }
   </style>
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:creator" content="@GoSecure_Inc" />
-  <meta property="og:title" content="Template Injection in Action" />
-  <meta property="og:image" content="https://gosecure.github.io/template-injection-workshop/preview.png"/>
-  <meta property="og:description" content="Workshop on Template Injection (6 exercises) covering Twig, Jinja2, Tornado, Velocity and Freemaker engines." />
-</head>
+<!-- Meta added -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:creator" content="@GoSecure_Inc" />
+<meta property="og:title" content="Template Injection in Action" />
+<meta property="og:image" content="https://gosecure.github.io/template-injection-workshop/preview.png"/>
+<meta property="og:description" content="Workshop on Template Injection (6 exercises) covering Twig, Jinja2, Tornado, Velocity and Freemaker engines." />
+<!-- Meta added --></head>
 <body>
   <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
   <google-codelab codelab-gaid=""
@@ -409,7 +410,7 @@ ${bytes[2]}
 <aside class="special"><p>Keep in mind that the bytes are printed in decimal format.</p>
 </aside>
 <h3 is-upgraded>Universal method</h3>
-<p>Oleksandr Mirosh and Alvaro Muñoz are detailing in their paper Room for Escape various chains that are specific to web containers. These containers are Tomcat, Jetty, GlassFish, WebLogic and WebSphere. These are a great source of inspiration if you are looking to escape the sandbox other than Freemarker.</p>
+<p>Oleksandr Mirosh and Alvaro Muñoz are detailing in their paper <a href="https://i.blackhat.com/USA-20/Wednesday/us-20-Munoz-Room-For-Escape-Scribbling-Outside-The-Lines-Of-Template-Security-wp.pdf" target="_blank">Room for Escape</a> various chains that are specific to web containers. These containers are Tomcat, Jetty, GlassFish, WebLogic and WebSphere. These are a great source of inspiration if you are looking to escape the sandbox other than Freemarker.</p>
 <p>However if your objective is to exploit the current template engine, there is a universal payload (also from the same paper) that will work on Freemarker 2.3.29 and lower (Fixed in March 2020). You need to find a variable in the data model that is an object.</p>
 <pre><code language="language-xml" class="language-xml">&lt;#assign classloader=&lt;&lt;object&gt;&gt;.class.protectionDomain.classLoader&gt;
 &lt;#assign owc=classloader.loadClass(&#34;freemarker.template.ObjectWrapper&#34;)&gt;
@@ -453,10 +454,11 @@ failed
         <p>Template engines are very powerful. They need to be considered as scripts. Script needs to be either very well sandbox. If sandboxing is not possible, user permission can be used to limit the access these risky features. In many cases, they will allow compromising of the underlying operating system.</p>
 <h2 is-upgraded>References</h2>
 <ul>
-<li>Server-Side Template Injection <a href="http://blog.portswigger.net/2015/08/server-side-template-injection.html" target="_blank">[Slides]</a> | <a href="https://www.blackhat.com/docs/us-15/materials/us-15-Kettle-Server-Side-Template-Injection-RCE-For-The-Modern-Web-App-wp.pdf" target="_blank">[White-paper]</a></li>
-<li>Scribbling Outside the Lines of Template Security <a href="https://i.blackhat.com/USA-20/Wednesday/us-20-Munoz-Room-For-Escape-Scribbling-Outside-The-Lines-Of-Template-Security.pdf" target="_blank">[Slides]</a> | <a href="https://i.blackhat.com/USA-20/Wednesday/us-20-Munoz-Room-For-Escape-Scribbling-Outside-The-Lines-Of-Template-Security-wp.pdf" target="_blank">[White-paper]</a></li>
+<li>Server-Side Template Injection <a href="http://blog.portswigger.net/2015/08/server-side-template-injection.html" target="_blank">[Slides]</a> | <a href="https://www.blackhat.com/docs/us-15/materials/us-15-Kettle-Server-Side-Template-Injection-RCE-For-The-Modern-Web-App-wp.pdf" target="_blank">[White-paper]</a> by James Kettle</li>
+<li>Room for Escape: Scribbling Outside the Lines of Template Security <a href="https://i.blackhat.com/USA-20/Wednesday/us-20-Munoz-Room-For-Escape-Scribbling-Outside-The-Lines-Of-Template-Security.pdf" target="_blank">[Slides]</a> | <a href="https://i.blackhat.com/USA-20/Wednesday/us-20-Munoz-Room-For-Escape-Scribbling-Outside-The-Lines-Of-Template-Security-wp.pdf" target="_blank">[White-paper]</a> by Oleksandr Mirosh and Alvaro Muñoz</li>
 <li><a href="http://ha.cker.info/exploitation-of-server-side-template-injection-with-craft-cms-plguin-seomatic/" target="_blank">Exploitation of Server Side Template Injection with Craft CMS (Twig template)</a></li>
 <li><a href="https://pequalsnp-team.github.io/cheatsheet/flask-jinja2-ssti" target="_blank">Cheatsheet - Flask &amp; Jinja2 SSTI</a></li>
+<li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Server%20Side%20Template%20Injection" target="_blank">PayloadsAllTheThings: Community Github repository</a></li>
 </ul>
 
 
